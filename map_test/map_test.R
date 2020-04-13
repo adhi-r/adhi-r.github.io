@@ -65,14 +65,14 @@ m %>% addPolygons(
 
 
 labels <- sprintf(
-  "<strong>%s</strong><br/>%g people / mi<sup>2</sup><br/>%g random number<br/>Hi Rachel and Margot!",
+  "<strong>%s</strong><br/>%g people / mi<sup>2</sup><br/>%g is a random number added by Adhi<br/><i>Hi Rachel and Margot!</i>",
   states$name,
   states$density,
   states$runif_test
 ) %>% lapply(htmltools::HTML)
 
 m <- m %>% addPolygons(
-  fillColor = ~ pal(runif_test),
+  fillColor = ~ pal(density),
   weight = 2,
   opacity = 1,
   color = "white",
@@ -99,6 +99,7 @@ m %>% addLegend(
   values = ~ density,
   opacity = 0.7,
   title = NULL,
+  #title = "Population density",
   position = "bottomright"
 )
 
