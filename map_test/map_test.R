@@ -1,7 +1,8 @@
 # testing interactive map making for hiring lab
 # Adhi R. <adhir@indeed.com
 # using this post: https://rstudio.github.io/leaflet/choropleths.html
-
+# potentially useful comment combining albersusa and leaflet: https://github.com/rstudio/leaflet/issues/172#issuecomment-413613736
+# potentially useful package: https://github.com/hrbrmstr/albersusa
 library(tidyverse)
 library(leaflet)
 library(sp)
@@ -19,7 +20,7 @@ mapbox_api_key <-
   "pk.eyJ1IjoiYWRoaXJhamFwcmFiIiwiYSI6ImNrOHhya3F4NDFhamEzZnA2enpyZzJ4bXkifQ.KDyQDWWPj0ZkTxPcrTatxA"
 
 m <- leaflet(states) %>%
-  setView(-96, 37.8, 4) %>%
+  setView(-96, 37.8, 5) %>%
   addTiles()
 
 m %>% addPolygons()
@@ -71,7 +72,7 @@ labels <- sprintf(
 ) %>% lapply(htmltools::HTML)
 
 m <- m %>% addPolygons(
-  fillColor = ~ pal(density),
+  fillColor = ~ pal(runif_test),
   weight = 2,
   opacity = 1,
   color = "white",
