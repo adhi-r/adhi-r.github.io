@@ -8,14 +8,6 @@ library(leaflet)
 library(leaflet.extras)
 library(sp)
 
-states <-
-  geojsonio::geojson_read(x = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"
-                          , what = "sp")
-
-states$runif_test <- runif(52, 0, 1000)
-class(states)
-names(states)
-
 jed_data <- read_csv(file = "state_change_to_apr10.csv")
 
 augmented_jed_data <- jed_data %>%
@@ -29,31 +21,36 @@ augmented_jed_data <- jed_data %>%
   arrange(state_name) %>%
   bind_rows(tibble(
     state = "pr",
-    jobs = 0,
+    jobs = NA,
     upper_state = "PR",
     state_name = "Puerto Rico"
   ))
 
 augmented_jed_data
 
+states <-
+  geojsonio::geojson_read(x = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"
+                          , what = "sp")
+
+states$runif_test <- runif(52, 0, 1000)
+class(states)
+names(states)
+
+
+
 states$jobs_metric <- augmented_jed_data$jobs
 
-mapbox_api_key <-
-  "pk.eyJ1IjoiYWRoaXJhamFwcmFiIiwiYSI6ImNrOHhya3F4NDFhamEzZnA2enpyZzJ4bXkifQ.KDyQDWWPj0ZkTxPcrTatxA"
+m <- leaflet(states, options = leafletOptions(zoomControl = FALSE,
+                                              minZoom = 4, maxZoom = 4)) %>%
+  setView(-96, 37.8, 4)
 
-m <- leaflet(states) %>%
-  setView(-96, 37.8, 5)
-
-m %>% addPolygons()
-
-bins1 <- (c(0, -0.1, -0.2, -0.3, -0.4, -0.5) * 100)
-
-bins2 <-
-  c(-0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0) * 100
-bins3 <- c(-0.5, -0.4, -0.3, -0.2, -0.1, 0) * 100
-bins4 <- c(0, -.3, -.32, -.35, -.5) * 100
 my_pal <-
-  colorBin("Blues", domain = states$jobs_metric, bins = bins4, reverse = TRUE)
+  colorNumeric(
+    colorRampPalette(c("#C8D8FC","#2164F3", "#020B1E"), interpolate = "spline")(10),
+    domain = states$jobs_metric,
+    reverse = TRUE,
+    na.color = NA
+  )
 # more colors can be found here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
 
 labels <- sprintf(
@@ -90,22 +87,15 @@ m_int <- m %>% addPolygons(
   position = "bottomright",
   #na.label = NA,
   labFormat = labelFormat(suffix = "%", between = "% to ")
-)
-m_int %>%
+) %>%
   setMapWidgetStyle(list(background = "white"))
 
+source("addTitle.R")
+m_int  %>%
+  addTitle("Decline in job postings by state",
+           fontSize = 30,
+           fontFamily = "Helvetica")
 
-# indeed colors?
-if (FALSE) {
-  ind_pal <-
-    colorRampPalette(c("#2164F3", "#FF6600"), interpolate = "spline")(5)
 
-  m %>% addPolygons(
-    fillColor = ~ ind_pal(jobs_metric),
-    weight = 2,
-    opacity = 1,
-    color = "white",
-    dashArray = "3",
-    fillOpacity = 0.7
-  )
-}
+
+colorRampPalette(c("#4097F8","#2164F3", "#223C92"), interpolate = "spline")(5)
