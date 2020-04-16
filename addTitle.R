@@ -39,7 +39,7 @@ addTitle = function(object,
                                        h1.style['-webkit-transform']='translateX(-50%)';
                                        h1.style.left='",leftPosition ,"%';
                                        h1.style.top='",topPosition,"%';
-                                       h1.nowrap = 'white-space: nowrap'
+                                       h1.nowrap.whiteSpace = 'nowrap';
                                        document.body.appendChild(h1);
                                        }"))
 }
