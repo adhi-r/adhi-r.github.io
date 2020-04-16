@@ -93,7 +93,7 @@ m_int <- m %>% addPolygons(
 source("addTitle.R")
 m_int  %>%
   addTitle("Decline in job postings by state",
-           fontSize = 20,
+           fontSize = 15,
            fontFamily = "Helvetica")
 
 
